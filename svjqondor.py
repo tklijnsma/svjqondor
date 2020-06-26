@@ -93,6 +93,7 @@ def run_step_cmd(cmssw, inpre, outpre, **physics):
         'cd {0}'.format(testdir),
         step_cmd(inpre, outpre, **physics)
         ])
+    return expected_outfile
 
 
 
