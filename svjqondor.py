@@ -48,6 +48,40 @@ def formatted_filename(pre, mz, rinv, mdark, max_events=None, part=1, boost=400.
             )
         )
 
+def mg_tarball_cmd(
+    year, mz, mdark, rinv,
+    boost=None
+    ):
+    cmd = (
+        'python runMG.py'
+        ' year={year}'
+        ' madgraph=1'
+        ' channel=s'
+        ' outpre=step0_GRIDPACK'
+        ' mMediator={mz:.0f}'
+        ' mDark={mdark:.0f}'
+        ' rinv={rinv}'
+        .format(
+            year=year, mz=mz, mdark=mdark, rinv=rinv
+            )
+        )
+    if boost:
+        cmd += ' boost={0:.0f}'.format(boost)
+    return cmd
+
+# step0_GRIDPACK_s-channel_mMed-250_mDark-20_rinv-0.3_alpha-peak_13TeV-madgraphMLM-pythia8_n-1.tar.xz
+def run_mg_tarball_cmd(cmssw, **physics):
+    testdir = osp.join(cmssw.cmssw_src, 'SVJ/Production/test')
+    expected_outfile = osp.join(
+        testdir,
+        formatted_filename(pre='step0_GRIDPACK', **physics).replace('.root', '.tar.xz').replace('part', 'n')
+        )
+    cmssw.run_commands([
+        'cd {0}'.format(testdir),
+        mg_tarball_cmd(**physics)
+        ])
+    return expected_outfile
+
 def step_cmd(
     inpre, outpre,
     year, part, mz, mdark, rinv,
